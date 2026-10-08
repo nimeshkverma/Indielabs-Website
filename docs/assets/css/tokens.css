@@ -1,0 +1,277 @@
+/* ==========================================================================
+   The Indie Labs · Design tokens (Construction direction)
+   --------------------------------------------------------------------------
+   One source of truth for colour, type, spacing, radius, shadow and motion.
+   Components reference these properties only; no hard-coded values.
+
+   Themes
+   - Light is the default.
+   - Dark follows the visitor's system setting (prefers-color-scheme).
+   - Either can be forced with <html data-theme="light"> or data-theme="dark".
+
+   Contrast (WCAG 2.1) is noted beside each text colour, measured against
+   --color-bg unless stated. Colours marked "decorative" must never carry text.
+
+   Breakpoints (custom properties can't be used inside media queries, so
+   these are the agreed values to type by hand):
+     --bp-sm  560px   single-column footer, compact buttons
+     --bp-md  700px   practice grid collapses to one column
+     --bp-lg  860px   header switches to the menu button
+     --bp-xl  960px   hero stacks, footer goes to two columns
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   Fonts: self-hosted, as the Privacy Policy commits to no third-party fonts.
+   Download the files from Google Fonts (both are SIL Open Font Licence),
+   convert to woff2 and place them at the paths below.
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/manrope-variable.woff2") format("woff2-variations"),
+       url("../fonts/manrope-variable.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inria Serif";
+  src: url("../fonts/inria-serif-italic-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+
+/* --------------------------------------------------------------------------
+   Theme-independent tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Type families */
+  --font-sans: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-serif: "Inria Serif", Georgia, "Times New Roman", serif; /* italic only: captions, figure labels, footer headings */
+
+  /* Type scale: major third (1.25) from a 17px body.
+     The two largest steps are fluid between mobile and desktop. */
+  --text-xs:   0.8125rem;                                  /* 13px  legal small print */
+  --text-sm:   0.875rem;                                   /* 14px  labels, badges, footer base */
+  --text-base: 1.0625rem;                                  /* 17px  body */
+  --text-lg:   1.1875rem;                                  /* 19px  lead paragraph */
+  --text-xl:   1.5rem;                                     /* 24px  h3, card titles */
+  --text-2xl:  clamp(1.75rem, 1.25rem + 1.6vw, 2.5rem);    /* 28–40px  h2 section headings */
+  --text-3xl:  clamp(2.4rem, 1.4rem + 3.4vw, 4.1rem);      /* 38–66px  h1 hero */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;                                 /* wordmark only */
+
+  --leading-tight: 1.05;                                   /* h1 */
+  --leading-snug: 1.25;                                    /* h2, h3 */
+  --leading-body: 1.6;
+  --leading-address: 1.7;
+
+  --tracking-tight: -0.03em;                               /* h1 */
+  --tracking-snug: -0.015em;                               /* h2, h3, footer tagline */
+  --tracking-normal: 0;
+
+  --measure: 60ch;                                         /* max line length for body text */
+  --measure-narrow: 46ch;                                  /* card and practice copy */
+  --measure-heading: 14ch;                                 /* hero heading */
+
+  /* Spacing: 4px base */
+  --space-1: 0.25rem;   /*  4px */
+  --space-2: 0.5rem;    /*  8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-section: clamp(3.5rem, 2rem + 6vw, 6.5rem);      /* 56–104px between page sections */
+  --space-gutter: clamp(1.25rem, 0.5rem + 3vw, 3rem);      /* 20–48px page side padding */
+  --space-grid: clamp(2rem, 1rem + 4vw, 4.5rem);           /* 32–72px between grid columns */
+
+  /* Layout */
+  --wrap: 1200px;
+  --header-height: 4.5rem;
+
+  /* Radius: the geometry is drawn with straight edges, so radius stays small */
+  --radius-none: 0;
+  --radius-sm: 3px;          /* buttons, inputs, focus outlines */
+  --radius-md: 6px;          /* product cards, notice callout, menu panel */
+  --radius-full: 999px;      /* status badge */
+
+  /* Borders and figure strokes */
+  --border-width: 1px;
+  --stroke-figure: 2.25;     /* main figure lines (SVG units) */
+  --stroke-construct: 1;     /* construction lines and arcs */
+  --dash-construct: 4 5;     /* dashed guides */
+
+  /* Focus */
+  --focus-width: 2px;
+  --focus-offset: 3px;
+
+  /* Motion */
+  --duration-fast: 150ms;    /* hover colour changes */
+  --duration-base: 250ms;    /* menu open, accordion */
+  --duration-draw: 900ms;    /* one construction stroke */
+  --delay-draw-main: 700ms;  /* main lines start after the arcs */
+  --delay-draw-labels: 1400ms;
+  --ease-standard: cubic-bezier(.2, 0, 0, 1);
+  --ease-draw: cubic-bezier(.5, 0, .2, 1);
+
+  /* Stacking */
+  --z-header: 10;
+  --z-menu: 20;
+  --z-skip: 100;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-draw: 0ms;
+    --delay-draw-main: 0ms;
+    --delay-draw-labels: 0ms;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   Light theme (default)
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-bg: #FBF9F3;
+  --color-surface: #F2EEE4;          /* CTA bands, product cards, notice */
+  --color-surface-raised: #FFFFFF;   /* menu panel on mobile */
+
+  /* Text */
+  --color-text: #1E2A30;             /* 14.0:1 */
+  --color-text-muted: #5E6B70;       /*  5.2:1 (4.8:1 on --color-surface) */
+  --color-text-on-accent: #FBF9F3;   /*  8.2:1 on --color-accent */
+
+  /* Brand */
+  --color-accent: #1F516A;           /*  8.2:1  links, buttons, main figure lines */
+  --color-accent-hover: #173F53;
+  --color-accent-tint: rgba(31, 81, 106, .08);   /* hover fill for line buttons */
+  --color-highlight: #B8463B;        /*  5.0:1  one coral point per figure, focus ring */
+  --color-highlight-strong: #9E3B31; /*  text on --color-highlight-tint */
+  --color-highlight-tint: #F4E7E1;
+
+  /* Lines */
+  --color-rule: #DCD6C8;             /* decorative: dividers, list rules */
+  --color-construct: #8FA9B3;        /* decorative: construction arcs and grids */
+
+  /* Focus */
+  --color-focus: #B8463B;
+
+  /* Product status badge */
+  --color-status-dev-bg: #E7EAE7;    /* "In development" */
+  --color-status-dev-text: #1F516A;  /*  7.1:1 */
+  --color-status-early-bg: #F4E7E1;  /* "Early access" */
+  --color-status-early-text: #9E3B31;/*  5.6:1 */
+
+  /* Notice callout (e.g. "Please don't email health reports") */
+  --color-notice-bg: #F6ECE6;
+  --color-notice-border: #B8463B;
+  --color-notice-text: #1E2A30;      /* 12.6:1 */
+
+  /* Shadows: used sparingly; the figures do the visual work */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px rgba(30, 42, 48, .06);
+  --shadow-md: 0 8px 24px -10px rgba(30, 42, 48, .22);   /* open mobile menu only */
+}
+
+
+/* --------------------------------------------------------------------------
+   Dark theme
+   The two blocks below must stay identical: the first follows the system
+   setting, the second applies when data-theme="dark" is set by hand.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-bg: #16232A;
+    --color-surface: #1E2E36;
+    --color-surface-raised: #23353E;
+    --color-text: #EEF1EC;             /* 14.1:1 */
+    --color-text-muted: #9FB0B6;       /*  7.2:1 (6.2:1 on --color-surface) */
+    --color-text-on-accent: #16232A;   /*  8.1:1 on --color-accent */
+    --color-accent: #8CC0D3;           /*  8.1:1 */
+    --color-accent-hover: #A9D2E0;
+    --color-accent-tint: rgba(140, 192, 211, .10);
+    --color-highlight: #E8857A;        /*  6.2:1 */
+    --color-highlight-strong: #E8857A;
+    --color-highlight-tint: #333135;
+    --color-rule: #2C3F47;
+    --color-construct: #4C6670;
+    --color-focus: #E8857A;
+    --color-status-dev-bg: #273942;
+    --color-status-dev-text: #8CC0D3;  /*  6.1:1 */
+    --color-status-early-bg: #333135;
+    --color-status-early-text: #E8857A;/*  4.9:1 */
+    --color-notice-bg: #2B2D32;
+    --color-notice-border: #E8857A;
+    --color-notice-text: #EEF1EC;      /* 12.1:1 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow-md: 0 10px 28px -10px rgba(0, 0, 0, .55);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #16232A;
+  --color-surface: #1E2E36;
+  --color-surface-raised: #23353E;
+  --color-text: #EEF1EC;
+  --color-text-muted: #9FB0B6;
+  --color-text-on-accent: #16232A;
+  --color-accent: #8CC0D3;
+  --color-accent-hover: #A9D2E0;
+  --color-accent-tint: rgba(140, 192, 211, .10);
+  --color-highlight: #E8857A;
+  --color-highlight-strong: #E8857A;
+  --color-highlight-tint: #333135;
+  --color-rule: #2C3F47;
+  --color-construct: #4C6670;
+  --color-focus: #E8857A;
+  --color-status-dev-bg: #273942;
+  --color-status-dev-text: #8CC0D3;
+  --color-status-early-bg: #333135;
+  --color-status-early-text: #E8857A;
+  --color-notice-bg: #2B2D32;
+  --color-notice-border: #E8857A;
+  --color-notice-text: #EEF1EC;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-md: 0 10px 28px -10px rgba(0, 0, 0, .55);
+}
+
+
+/* --------------------------------------------------------------------------
+   Additions for the site build (not yet in reference/tokens.css)
+   -------------------------------------------------------------------------- */
+:root {
+  --text-ui: 0.9375rem;        /* 15px  nav links and buttons, per mockup */
+  --stroke-highlight: 1.75;    /* coral highlight strokes in figures */
+  --opacity-band: .12;         /* shaded band in the AI figure */
+  --logo-height: 22px;
+  --logo-height-mobile: 20px;
+  --figure-step-width: 120px;  /* lifecycle step figures */
+  --figure-hero-max: 480px;    /* hero figure when stacked */
+  --stagger-draw: 200ms;       /* gap between strokes drawn in sequence (style="--i: n") */
+  --color-backdrop: rgba(30, 42, 48, .45);   /* behind the email dialog */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --color-backdrop: rgba(0, 0, 0, .6); }
+}
+:root[data-theme="dark"] { --color-backdrop: rgba(0, 0, 0, .6); }
+@media (prefers-reduced-motion: reduce) {
+  :root { --stagger-draw: 0ms; }
+}
